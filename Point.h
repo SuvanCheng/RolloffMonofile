@@ -41,8 +41,9 @@ using std::stringstream;
 #define EPS 1e-6
 
 vector<double> xx, yy, zz, tt;
+
 //读取点云文件
-void readFile(string Pointpath){
+void readFile(string Pointpath) {
     cout << "读取点云文件：" << Pointpath << endl;
     cout << "..." << endl;
     ifstream file(Pointpath);
@@ -500,13 +501,14 @@ std::tm *gettm(long long timestamp) {
     auto tp = std::chrono::time_point<std::chrono::system_clock, std::chrono::milliseconds>(mTime);
     auto tt = std::chrono::system_clock::to_time_t(tp);
     std::tm *now = std::gmtime(&tt);
-    printf("%4d年%02d月%02d日 %02d:%02d:%02d\n", now->tm_year + 1900, now->tm_mon + 1, now->tm_mday, now->tm_hour, now->tm_min, now->tm_sec);
+    printf("%4d年%02d月%02d日 %02d:%02d:%02d\n", now->tm_year + 1900, now->tm_mon + 1, now->tm_mday, now->tm_hour,
+           now->tm_min, now->tm_sec);
     return now;
 }
 
 //写czml文件
-void writeCZML(string path, double min_t, double max_t, vector<num_day>& daylist, string longitude, string latitude, string heightDeo)
-{
+void writeCZML(string path, double min_t, double max_t, vector<num_day> &daylist, string longitude, string latitude,
+               string heightDeo) {
     string czmltxt = "/xt.czml";  //注意：Windows写"\\"，Ubuntu、macOS写"/"
     ofstream myout(path + czmltxt);
     //读取所有格式为gltf的文件
@@ -515,8 +517,7 @@ void writeCZML(string path, double min_t, double max_t, vector<num_day>& daylist
     string format = ".gltf";
     GetAllFormatFiles(path, files, format);
     int size = files.size();
-    for (int i = 0; i < size; i++)
-    {
+    for (int i = 0; i < size; i++) {
         size_t found = files[i].find(".");
         string strdou(files[i].c_str(), found);
         int a = atoi(strdou.c_str());
@@ -527,12 +528,12 @@ void writeCZML(string path, double min_t, double max_t, vector<num_day>& daylist
     string k = "	";
     myout << "[" << endl;
     //首对象
-    auto minday = min_t - (double)86400000;
-    std::tm* begin_time = gettm(minday);
+    auto minday = min_t - (double) 86400000;
+    std::tm *begin_time = gettm(minday);
     string daystring1 = DayString(begin_time);
 
-    auto maxday = max_t + (double)86400000;
-    std::tm* end_time = gettm(maxday);
+    auto maxday = max_t + (double) 86400000;
+    std::tm *end_time = gettm(maxday);
     string daystring2 = DayString(end_time);
     cout << daystring1 << endl;
     cout << daystring2 << endl;
@@ -547,17 +548,17 @@ void writeCZML(string path, double min_t, double max_t, vector<num_day>& daylist
     myout << k << k << "}" << endl;
     myout << k << "}," << endl;
 
-    for (int i = 0; i < daytrue.size() - 1; i++)
-    {
+    for (int i = 0; i < daytrue.size() - 1; i++) {
         int m = daytrue[i] - 1;
-        std::tm* midtime = gettm(daylist[m].day);
+        std::tm *midtime = gettm(daylist[m].day);
         string daystring = DayString(midtime);
         myout << k << "{" << endl;
         myout << k << k << "\"id\":\"" + daystring + "\"," << endl;
         myout << k << k << "\"name\":\"" + daystring + "\"," << endl;
         myout << k << k << "\"availability\":\"" + daystring + "/" + daystring2 + "\"," << endl;
         myout << k << k << "\"position\":{" << endl;
-        myout << k << k << k << "\"cartographicDegrees\":[" + longitude + "," + latitude + "," + heightDeo + "]" << endl;
+        myout << k << k << k << "\"cartographicDegrees\":[" + longitude + "," + latitude + "," + heightDeo + "]"
+              << endl;
         myout << k << k << "}," << endl;
         myout << k << k << "\"model\":{" << endl;
         myout << k << k << k << "\"gltf\":\"" + to_string(daytrue[i]) + ".gltf\"," << endl;
@@ -567,7 +568,7 @@ void writeCZML(string path, double min_t, double max_t, vector<num_day>& daylist
         myout << k << "}" << "," << endl;
     }
     int m = daytrue.back() - 1;
-    std::tm* midtime = gettm(daylist[m].day);
+    std::tm *midtime = gettm(daylist[m].day);
     string daystring = DayString(midtime);
     myout << k << "{" << endl;
     myout << k << k << "\"id\":\"" + daystring + "\"," << endl;
